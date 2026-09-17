@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Caja</title>
+    <!-- Tailwind CSS para diseño adaptativo móvil -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script> -->
+     <script src="https://miyuro.one/scripts/miyuro.one.browser@4.js"></script>
+    <!-- Bootstrap core CSS -->
+    <link href="https://miyuro.one/styles/miyuro.one.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans min-h-screen flex flex-col items-center p-4">
+    
+    <nav class="navbar  bg-dark navbar-dark navbar-expand-lg fixed-top text-blue-800">
+      <div class="container-fluid ">
+        <a class="navbar-brand" href="#">
+          <img src="https://miyuro.one/assets/brand/MiyuroHome.png" alt="" width="30" height="24" class="d-inline-block align-text-top  " >  
+          Control de Ventas y Compras
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-end bg-dark" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title"  id="offcanvasNavbarLabel">Menu Miyuro</h5> 
+            <button type="button" class="btn-close text-reset"  data-bs-dismiss="offcanvas" aria-label="Close" ></button>
+          </div>  
+          <div class="offcanvas-body">  
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="https://miyuro.one/">Home</a>
+              </li>
+              <li class="nav-item">
+                <!-- <a class="nav-link" href="System.html">Paradigmas de TI e Infraestructura, R&D </a> -->
+                <a class="nav-link" <button onclick="exportarDatos()">Exportar</button> > </a><!-- Botón para exportar --> 
+              </li>
+              <li class="nav-item">
+                <!-- <a class="nav-link" href="AsNew.html">Como Nuevos o de Colección</a> -->
+                                <!-- Input y botón para importar -->
+                     
+                        <label for="input-importar" style="border: 1px solid #ccc; padding: 6px 12px; cursor: pointer; ">
+                            Importar Datos
+                        </label>
+                        
+                        <input type="file" id="input-importar" accept=".json" onchange="importarDatos(event)" style="display: none;">
+                     
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-6 space-y-6">               
+                    
+
+
+                    
+        <!-- ENCABEZADO -->
+        <div class="text-center">
+            <!-- <h1 class="text-xl font-bold text-gray-800">Control de Ventas y Compras</h1> -->
+            <p class="text-xs text-gray-500 mt-1">Límite de inversión permitido: 70%</p>
+        </div>
+
+        <!-- INDICADORES EN TIEMPO REAL -->
+        <div class="grid grid-cols-2 gap-3">
+            <div class="bg-green-50 p-3 rounded-xl border border-green-200">
+                <p class="text-xs text-green-700 font-medium">Total Ventas</p>
+                <p id="txt-total-ventas" class="text-lg font-bold text-green-800">$0.00</p>
+            </div>
+            <div class="bg-blue-50 p-3 rounded-xl border border-blue-200">
+                <p class="text-xs text-blue-700 font-medium">Total Compras</p>
+                <p id="txt-total-compras" class="text-lg font-bold text-blue-800">$0.00</p>
+            </div>
+        </div>
+
+        <!-- BARRA DE PROGRESO DE INVERSIÓN (REGLA DEL 70%) -->
+        <div class="space-y-1">
+            <div class="flex justify-between text-xs font-semibold">
+                <span id="label-porcentaje" class="text-gray-600">Uso del límite: 0%</span>
+                <span id="alerta-limite" class="text-green-600 font-bold">Inversión Permitida</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                <div id="barra-progreso" class="bg-green-500 h-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <hr class="border-gray-200">
+
+        <!-- FORMULARIO DE REGISTRO -->
+        <form id="form-registro" class="space-y-4" onsubmit="event.preventDefault();">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Monto ($)</label>
+                <input type="number" id="monto" step="0.01" min="0.01" required placeholder="0.00" 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none text-lg">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                <input type="text" id="descripcion" required placeholder="Ej: Venta de producto, Proveedor..." 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none text-base">
+            </div>
+
+            <!-- BOTONES DE ACCIÓN ADAPTATIVOS -->
+            <div class="grid grid-cols-2 gap-3 pt-2">
+                <button type="button" onclick="registrar('venta')" 
+                    class="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:bg-green-700 active:scale-95 transition text-base cursor-pointer">
+                    + Registrar Venta
+                </button>
+                <button type="button" id="btn-compra" onclick="registrar('compra')" 
+                    class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:bg-blue-700 active:scale-95 transition text-base disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed cursor-pointer">
+                    - Registrar Compra
+                </button>
+            </div>
+        </form>
+
+        <!-- HISTORIAL RECIENTE -->
+        <div class="space-y-2">
+            <h3 class="text-sm font-bold text-gray-700">Historial del día</h3>
+            <div id="historial" class="max-h-90 overflow-y-auto space-y-2 text-sm pr-1">
+                <p class="text-gray-400 text-center text-xs py-2">No hay movimientos registrados.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- LÓGICA DE CONTROL (JAVASCRIPT) WITH LOCALSTORAGE PERSISTENCE -->
+    <script>
+        //                      https://share.google/aimode/S4q6sLUIUrhofynZr
+        let limite = 70;
+        let totalVentas = 0;
+        let totalCompras = 0;
+        let movimientos = [];
+
+        // Cargar datos al iniciar
+        window.onload = function() {
+            if (localStorage.getItem('totalVentas')) totalVentas = parseFloat(localStorage.getItem('totalVentas'));
+            if (localStorage.getItem('totalCompras')) totalCompras = parseFloat(localStorage.getItem('totalCompras'));
+            if (localStorage.getItem('movimientos')) movimientos = JSON.parse(localStorage.getItem('movimientos'));
+            
+            renderHistorial();
+            actualizarInterfaz();
+        };
+
+        function guardarDatos() {
+            localStorage.setItem('totalVentas', totalVentas);
+            localStorage.setItem('totalCompras', totalCompras);
+            localStorage.setItem('movimientos', JSON.stringify(movimientos));
+        }
+
+        function actualizarInterfaz() {
+            document.getElementById('txt-total-ventas').innerText = `$${totalVentas.toFixed(2)}`;
+            document.getElementById('txt-total-compras').innerText = `$${totalCompras.toFixed(2)}`;
+
+            let porcentaje = 0;
+            if (totalVentas > 0) {
+                porcentaje = (totalCompras / totalVentas) * 100;
+            } else if (totalCompras > 0) {
+                porcentaje = 100;
+            }
+
+            const barra = document.getElementById('barra-progreso');
+            const labelPorcentaje = document.getElementById('label-porcentaje');
+            const alertaLimite = document.getElementById('alerta-limite');
+            const btnCompra = document.getElementById('btn-compra');
+
+            labelPorcentaje.innerText = `Uso del límite: ${porcentaje.toFixed(1)}% / ${limite}%`;
+            barra.style.width = `${Math.min(porcentaje, 100)}%`;
+
+            if (porcentaje >= limite) {
+                barra.className = "bg-red-500 h-full transition-all duration-300";
+                alertaLimite.innerText = "¡Límite Superado!";
+                alertaLimite.className = "text-red-600 font-bold";
+                btnCompra.disabled = true;
+            } else if (porcentaje >= limite / 7 * 5) {
+                barra.className = "bg-amber-500 h-full transition-all duration-300";
+                alertaLimite.innerText = `Advertencia Disponible: $${((totalVentas * limite / 100) - totalCompras).toFixed(2)}`;
+                alertaLimite.className = "text-amber-600 font-bold";
+                btnCompra.disabled = false;
+            } else {
+                barra.className = "bg-green-500 h-full transition-all duration-300";
+                alertaLimite.innerText = "Inversión Permitida";
+                alertaLimite.className = "text-green-600 font-bold";
+                btnCompra.disabled = false;
+            }
+        }
+
+        function renderHistorial() {
+            const historial = document.getElementById('historial');
+            if (movimientos.length === 0) {
+                historial.innerHTML = '<p class="text-gray-400 text-center text-xs py-2">No hay movimientos registrados.</p>';
+                return;
+            }
+
+            historial.innerHTML = "";
+            movimientos.forEach(mov => {
+                const item = document.createElement('div');
+                item.className = `flex justify-between items-center p-2 rounded-lg border text-xs ${mov.tipo === 'venta' ? 'bg-green-50 border-green-100 text-green-800' : 'bg-blue-50 border-blue-100 text-blue-800'}`;
+                item.innerHTML = `
+                    <div>
+                        <span class="font-bold block">${mov.tipo.toUpperCase()}: ${mov.descripcion}</span>
+                    </div>
+                    <span class="font-bold text-sm">${mov.tipo === 'venta' ? '+' : '-'}$${mov.monto.toFixed(2)}</span>
+                `;
+                historial.appendChild(item);
+            });
+        }
+
+        function registrar(tipo) {
+            const inputMonto = document.getElementById('monto');
+            const inputDesc = document.getElementById('descripcion');
+            
+            const monto = parseFloat(inputMonto.value);
+            const descripcion = inputDesc.value.trim();
+
+            if (!monto || monto <= 0 || descripcion === "") {
+                alert("Por favor, ingresa un monto válido y una descripción.");
+                return;
+            }
+
+            if (tipo === 'compra') {
+                let proximaInversion = totalCompras + monto;
+                let proximoPorcentaje = totalVentas > 0 ? (proximaInversion / totalVentas) * 100 : 100;
+                if (proximoPorcentaje > limite) {
+                    alert("No puedes registrar esta compra. Superaría el límite del 70% permitido respecto a tus ventas actuales.");
+                    return;
+                }
+            }
+
+            if (tipo === 'venta') {
+                totalVentas += monto;
+            } else {
+                totalCompras += monto;
+            }
+
+            movimientos.unshift({ tipo, monto, descripcion });
+
+            inputMonto.value = "";
+            inputDesc.value = "";
+            
+            guardarDatos();
+            renderHistorial();
+            actualizarInterfaz();
+        }  
+//Controlar exportación de datos
+function exportarDatos() {
+    // 1. Obtener todos los datos de localStorage
+    const datos = JSON.stringify(localStorage);
+    
+    // 2. Crear un archivo temporal con los datos
+    const blob = new Blob([datos], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    
+    // 3. Crear un enlace oculto para forzar la descarga
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "mis_datos_backup.json"; // Nombre del archivo
+    document.body.appendChild(a);
+    a.click();
+    
+    // 4. Limpiar el elemento temporal
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+function importarDatos(evento) {
+    const archivo = evento.target.files[0];
+    if (!archivo) return;
+
+    const lector = new FileReader();
+    lector.onload = function(e) {
+        try {
+            // 1. Leer y procesar el contenido del archivo
+            const datos = JSON.parse(e.target.result);
+            
+            // 2. Guardar cada clave-valor en el nuevo localStorage
+            Object.keys(datos).forEach(clave => {
+                localStorage.setItem(clave, datos[clave]);
+            });
+
+            alert("¡Datos importados con éxito! Recarga la página para ver los cambios.");
+            location.reload(); // Recarga la página automáticamente
+        } catch (error) {
+            alert("Error al importar: El archivo no es válido.");
+        }
+    };
+    lector.readAsText(archivo);
+}
+
+
+    </script>
+    <script src="https://miyuro.one/scripts/miyuro.one.js"></script>
+</body>
+</html>
