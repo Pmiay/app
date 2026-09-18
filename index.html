@@ -16,7 +16,7 @@
       <div class="container-fluid ">
         <a class="navbar-brand" href="#">
           <img src="https://miyuro.one/assets/brand/MiyuroHome.png" alt="" width="30" height="24" class="d-inline-block align-text-top  " >  
-          Movimiento Ingresos
+          Control de Ventas y Compras
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
           <span class="navbar-toggler-icon"></span>
@@ -77,10 +77,10 @@
 
                     
         <!-- ENCABEZADO -->
-        <div class="text-center">
+<!--         <div class="text-center"> -->
             <!-- <h1 class="text-xl font-bold text-gray-800">Control de Ventas y Compras</h1> -->
-            <p class="text-xs text-gray-500 mt-1">Límite de inversión permitido: 70%</p>
-        </div>
+<!--             <p class="text-xs text-gray-500 mt-1">Límite de inversión permitido: 70%</p>
+        </div>  -->
 
         <!-- INDICADORES EN TIEMPO REAL -->
         <div class="grid grid-cols-2 gap-3">
@@ -146,7 +146,7 @@
 
     <!-- LÓGICA DE CONTROL (JAVASCRIPT) WITH LOCALSTORAGE PERSISTENCE -->
     <script>
-        //                      https://share.google/aimode/S4q6sLUIUrhofynZr
+        //                      https://share.google/aimode/S4q6sLUIUrhofynZr  https://share.google/aimode/fDFkE9hiQd0171Sq1
         let limite = 70;
         let totalVentas = 0;
         let totalCompras = 0;
@@ -184,7 +184,7 @@
             const alertaLimite = document.getElementById('alerta-limite');
             const btnCompra = document.getElementById('btn-compra');
 
-            labelPorcentaje.innerText = `Uso del límite: ${porcentaje.toFixed(1)}% / ${limite}%`;
+            labelPorcentaje.innerText = `Uso del límite: ${porcentaje.toFixed(1)}% de ${limite}%`;
             barra.style.width = `${Math.min(porcentaje, 100)}%`;
 
             if (porcentaje >= limite) {
@@ -194,7 +194,7 @@
                 btnCompra.disabled = true;
             } else if (porcentaje >= limite / 7 * 5) {
                 barra.className = "bg-amber-500 h-full transition-all duration-300";
-                alertaLimite.innerText = `Advertencia Disponible: $${((totalVentas * limite / 100) - totalCompras).toFixed(2)}`;
+                alertaLimite.innerText = `Disponible: $${((totalVentas * limite / 100) - totalCompras).toFixed(2)}`;
                 alertaLimite.className = "text-amber-600 font-bold";
                 btnCompra.disabled = false;
             } else {
@@ -242,7 +242,7 @@
                 let proximaInversion = totalCompras + monto;
                 let proximoPorcentaje = totalVentas > 0 ? (proximaInversion / totalVentas) * 100 : 100;
                 if (proximoPorcentaje > limite) {
-                    alert("No puedes registrar esta compra. Superaría el límite del 70% permitido respecto a tus ventas actuales.");
+                    alert(`No puedes registrar esta compra. Superaría el límite del ${(limite)}% permitido respecto a tus ventas actuales.`);
                     return;
                 }
             }
