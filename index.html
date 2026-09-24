@@ -1,313 +1,506 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Caja</title>
-    <!-- Tailwind CSS para diseño adaptativo móvil -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script> -->
-     <script src="https://miyuro.one/scripts/miyuro.one.browser@4.js"></script>
-    <!-- Bootstrap core CSS -->
-    <link href="https://miyuro.one/styles/miyuro.one.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 font-sans min-h-screen flex flex-col items-center p-4">
-    
-    <nav class="navbar  bg-dark navbar-dark navbar-expand-lg fixed-top text-blue-800">
-      <div class="container-fluid ">
-        <a class="navbar-brand" href="#">
-          <img src="https://miyuro.one/assets/brand/MiyuroHome.png" alt="" width="30" height="24" class="d-inline-block align-text-top  " >  
-          Control de Ventas y Compras
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="offcanvas offcanvas-end bg-dark" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-          <div class="offcanvas-header">
-            <h5 class="offcanvas-title"  id="offcanvasNavbarLabel">Menu Miyuro</h5> 
-            <button type="button" class="btn-close text-reset"  data-bs-dismiss="offcanvas" aria-label="Close" ></button>
-          </div>  
-          <div class="offcanvas-body">  
-            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="https://miyuro.one/">Home</a>
-              </li>
-              <li class="nav-item">
-                <!-- <a class="nav-link" href="System.html">Paradigmas de TI e Infraestructura, R&D </a> -->
-                <a class="nav-link" <button onclick="exportarDatos()">Exportar</button> > </a><!-- Botón para exportar --> 
-              </li>
-              <li class="nav-item">
-                <!-- <a class="nav-link" href="AsNew.html">Como Nuevos o de Colección</a> -->
-                                <!-- Input y botón para importar -->
-                     
-                        <label for="input-importar" style="border: 1px solid #ccc; padding: 6px 12px; cursor: pointer; ">
-                            Importar Datos
-                        </label>
-                        
-                        <input type="file" id="input-importar" accept=".json" onchange="importarDatos(event)" style="display: none;">
-                     
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </nav>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Registro de Caja</title>
+        <!-- Tailwind CSS para diseño adaptativo móvil -->
+        <script src="https://miyuro.one/scripts/miyuro.one.browser@4.js"></script>
+        <!-- Bootstrap core CSS -->
+        <link href="https://miyuro.one/styles/miyuro.one.css" rel="stylesheet">
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-6 space-y-6">               
+     </head>
+    <body class="bg-gray-100 font-sans min-h-screen flex flex-col items-center p-4">       
+        <nav class="navbar bg-dark navbar-dark navbar-expand-lg fixed-top">
+            <div class="container-fluid">
+                <!-- Logo y marca -->
+                <a class="navbar-brand" href="#">
+                    <img src="https://miyuro.one/assets/brand/MiyuroHome.png" alt="Miyuro Logo" width="30" height="24" class="d-inline-block align-text-top me-2">  
+                    Ventas y Compras
+                </a>
+                
+                <!-- Botón Hamburguesa para Móviles -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <!-- Contenedor del Menú Lateral (Offcanvas) -->
+                <div class="offcanvas offcanvas-end bg-dark text-white" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu Miyuro</h5> 
+                        <!-- Corrección: btn-close-white para que se vea la X en fondo oscuro -->
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>  
                     
+                    <div class="offcanvas-body">  
+                        <!-- Se añaden clases de alineación y espaciado para móviles y escritorio -->
+                        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 align-items-lg-center gap-2">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="https://miyuro.one/">Home</a>
+                            </li>
+                            
+                            <!-- Opción Exportar: Corrección de sintaxis -->
+                            <li class="nav-item">
+                                <button onclick="exportarDatos()" class="btn btn-nav btn-link nav-link border-0 text-start w-100">
+                                    Exportar
+                                </button>
+                            </li>
+                            
+                            <!-- Opción Importar: Estilizado limpio e integrado al Navbar -->
+                            <li class="nav-item">
+                                <label for="input-importar" class="btn btn-outline-light btn-sm m-0 cursor-pointer d-block d-lg-inline-block text-start">
+                                    Importar Datos
+                                </label>
+                                <input type="file" id="input-importar" accept=".json" onchange="importarDatos(event)" style="display: none;">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
 
 
-                    
-        <!-- ENCABEZADO -->
-<!--         <div class="text-center"> -->
-            <!-- <h1 class="text-xl font-bold text-gray-800">Control de Ventas y Compras</h1> -->
-<!--             <p class="text-xs text-gray-500 mt-1">Límite de inversión permitido: 70%</p>
-        </div>  -->
-<div class ="space-y-1"></div>
-        <!-- INDICADORES EN TIEMPO REAL -->
-        <div class="grid grid-cols-2 gap-3">
-            <div class="bg-green-50 p-3 rounded-xl border border-green-200">
-                <p class="text-xs text-green-700 font-medium">Total Ventas</p>
-                <p id="txt-total-ventas" class="text-lg font-bold text-green-800">$0.00</p>
-            </div>
-            <div class="bg-blue-50 p-3 rounded-xl border border-blue-200">
-                <p class="text-xs text-blue-700 font-medium">Total Compras</p>
-                <p id="txt-total-compras" class="text-lg font-bold text-blue-800">$0.00</p>
-            </div>
-        </div>
 
-        <!-- BARRA DE PROGRESO DE INVERSIÓN (REGLA DEL 70%) -->
-        <div class="space-y-1">
-            <div class="flex justify-between text-xs font-semibold">
-                <span id="label-porcentaje" class="text-gray-600">Uso del límite: 0%</span>
-                <span id="alerta-limite" class="text-green-600 font-bold">Inversión Permitida</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                <div id="barra-progreso" class="bg-green-500 h-full transition-all duration-300" style="width: 0%"></div>
-            </div>
-        </div>
+
+
+
+
+
+
+
 
         <hr class="border-gray-200">
 
-        <!-- FORMULARIO DE REGISTRO -->
-        <form id="form-registro" class="space-y-4" onsubmit="event.preventDefault();">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Monto ($)</label>
-                <input type="number" id="monto" step="0.01" min="0.01" required placeholder="0.00" 
-                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none text-lg">
-            </div>
+        <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-6 space-y-6">    
+                        
+                <!-- ENCABEZADO -->
+                <div class ="space-y-1"> 
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
-                <input type="text" id="descripcion" required placeholder="Ej: Venta de producto, Proveedor..." 
-                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none text-base">
-            </div>
-
-            <!-- BOTONES DE ACCIÓN ADAPTATIVOS -->
-            <div class="grid grid-cols-2 gap-3 pt-2">
-                <button type="button" onclick="registrar('venta')" 
-                    class="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:bg-green-700 active:scale-95 transition text-base cursor-pointer">
-                    + Registrar Venta
-                </button>
-                <button type="button" id="btn-compra" onclick="registrar('compra')" 
-                    class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:bg-blue-700 active:scale-95 transition text-base disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed cursor-pointer">
-                    - Registrar Compra
-                </button>
-            </div>
-        </form>
-
-        <!-- HISTORIAL RECIENTE -->
-        <div class="space-y-2">
-            <h3 class="text-sm font-bold text-gray-700">Historial del día</h3>
-            <div id="historial" class="max-h-90 overflow-y-auto space-y-2 text-sm pr-1">
-                <p class="text-gray-400 text-center text-xs py-2">No hay movimientos registrados.</p>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- LÓGICA DE CONTROL (JAVASCRIPT) WITH LOCALSTORAGE PERSISTENCE -->
-    <script>
-        //                      https://share.google/aimode/S4q6sLUIUrhofynZr  https://share.google/aimode/fDFkE9hiQd0171Sq1
-        let limite = 70;
-        let totalVentas = 0;
-        let totalCompras = 0;
-        let movimientos = [];
-
-        // Cargar datos al iniciar
-        window.onload = function() {
-            if (localStorage.getItem('totalVentas')) totalVentas = parseFloat(localStorage.getItem('totalVentas'));
-            if (localStorage.getItem('totalCompras')) totalCompras = parseFloat(localStorage.getItem('totalCompras'));
-            if (localStorage.getItem('movimientos')) movimientos = JSON.parse(localStorage.getItem('movimientos'));
-            
-            renderHistorial();
-            actualizarInterfaz();
-        };
-
-        function guardarDatos() {
-            localStorage.setItem('totalVentas', totalVentas);
-            localStorage.setItem('totalCompras', totalCompras);
-            localStorage.setItem('movimientos', JSON.stringify(movimientos));
-        }
-
-        function actualizarInterfaz() {
-            document.getElementById('txt-total-ventas').innerText = `$${totalVentas.toFixed(2)}`;
-            document.getElementById('txt-total-compras').innerText = `$${totalCompras.toFixed(2)}`;
-
-            let porcentaje = 0;
-            if (totalVentas > 0) {
-                porcentaje = (totalCompras / totalVentas) * 100;
-            } else if (totalCompras > 0) {
-                porcentaje = 100;
-            }
-
-            const barra = document.getElementById('barra-progreso');
-            const labelPorcentaje = document.getElementById('label-porcentaje');
-            const alertaLimite = document.getElementById('alerta-limite');
-            const btnCompra = document.getElementById('btn-compra');
-
-            labelPorcentaje.innerText = `Uso del límite: ${porcentaje.toFixed(1)}% de ${limite}%`;
-            barra.style.width = `${Math.min(porcentaje, 100)}%`;
-
-            if (porcentaje >= limite) {
-                barra.className = "bg-red-500 h-full transition-all duration-300";
-                alertaLimite.innerText = "¡Límite Superado!";
-                alertaLimite.className = "text-red-600 font-bold";
-                btnCompra.disabled = true;
-            } else if (porcentaje >= limite / 7 * 5) {
-                barra.className = "bg-amber-500 h-full transition-all duration-300";
-                alertaLimite.innerText = `Disponible: $${((totalVentas * limite / 100) - totalCompras).toFixed(2)}`;
-                alertaLimite.className = "text-amber-600 font-bold";
-                btnCompra.disabled = false;
-            } else {
-                barra.className = "bg-green-500 h-full transition-all duration-300";
-                alertaLimite.innerText = "Inversión Permitida";
-                alertaLimite.className = "text-green-600 font-bold";
-                btnCompra.disabled = false;
-            }
-        }
-
-        function renderHistorial() {
-            const historial = document.getElementById('historial');
-            if (movimientos.length === 0) {
-                historial.innerHTML = '<p class="text-gray-400 text-center text-xs py-2">No hay movimientos registrados.</p>';
-                return;
-            }
-
-            historial.innerHTML = "";
-            movimientos.forEach(mov => {
-                const item = document.createElement('div');
-                item.className = `flex justify-between items-center p-2 rounded-lg border text-xs ${mov.tipo === 'venta' ? 'bg-green-50 border-green-100 text-green-800' : 'bg-blue-50 border-blue-100 text-blue-800'}`;
-                item.innerHTML = `
-                    <div>
-                        <span class="font-bold block">${mov.tipo.toUpperCase()}: ${mov.descripcion}</span>
+                    <!-- INDICADORES EN TIEMPO REAL -->
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="bg-green-50 p-3 rounded-xl border border-green-200">
+                            <p class="text-xs text-green-700 font-medium">Ventas</p>
+                            <p id="txt-total-ventas" class="text-lg font-bold text-green-800 ">$0.00</p>
+                        </div>
+                        <div class="bg-gray-200 p-3 rounded-xl border border-green-100">
+                            <p class="text-xs text-gray-700 font-medium">Utilidad</p>
+                            <p id="txt-total-utilidad" class="text-lg font-bold text-gray-800">$0.00</p>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded-xl border border-blue-200">
+                            <p class="text-xs text-blue-700 font-medium">Compras</p>
+                            <p id="txt-total-compras" class="text-lg font-bold text-blue-800">$0.00</p>
+                        </div>
                     </div>
-                    <span class="font-bold text-sm">${mov.tipo === 'venta' ? '+' : '-'}$${mov.monto.toFixed(2)}</span>
-                `;
-                historial.appendChild(item);
-            });
-        }
+                      
+                    <!-- BARRA DE PROGRESO DE INVERSIÓN (REGLA DEL 70%) -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs font-semibold">
+                            <span id="label-porcentaje" class="text-gray-600">Uso del límite: 0%</span>
+                            <span id="alerta-limite" class="text-green-600 font-bold">Inversión Permitida</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                            <div id="barra-progreso" class="bg-green-500 h-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>    
+                <hr class="border-gray-200">
 
-        function registrar(tipo) {
-            const inputMonto = document.getElementById('monto');
-            const inputDesc = document.getElementById('descripcion');
+            <div class="container mt-1 pt-4">
+                <!-- 1. Controladores de las Pestañas (Navegación) -->
+                <ul class="nav nav-tabs mb-4" id="miTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="captura-tab" data-bs-toggle="tab" data-bs-target="#captura-pane" type="button" role="tab" aria-controls="captura-pane" aria-selected="true">
+                            📝 Nueva Operación
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="registros-tab" data-bs-toggle="tab" data-bs-target="#registros-pane" type="button" role="tab" aria-controls="registros-pane" aria-selected="false">
+                            📊 Historial
+                        </button>
+                    </li>
+                </ul>
+
+                    <!-- 2. Contenido de las Pestañas -->
+                    <div class="tab-content" id="contenidoTab">
+                        
+                        <!-- PESTAÑA 1: CAPTURA Y PROCESAMIENTO (Lleva el <form>) -->
+                        <div class="tab-pane fade show active" id="captura-pane" role="tabpanel" aria-labelledby="captura-tab" tabindex="0">
+                            <div class="card p-4 shadow-sm">
+                                
+                                <!-- FORMULARIO DE REGISTRO -->
+                                <form id="form-registro" class="space-y-4" onsubmit="event.preventDefault();">
+                                    <div class="grid grid-cols-2">
+                                        <div class=" ">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Monto ($)</label>
+                                            <input type="number" id="monto" step="0.01" min="0.01" required placeholder="0.00" 
+                                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none text-lg">
+                                        </div>    
+                                        <div class = "">
+                                                <label for="tipoMovimiento">Registrar:</label>
+                                                <select id="tipoMovimiento" name="tipoMovimientos">
+                                                <option value="venta">Venta</option>
+                                                <option value="inversion">Inversión</option>
+                                                <option value="gasto">Gasto</option>
+                                                </select>
+                                        </div>    
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                                        <input type="text" id="descripcion" required placeholder="Ej: Venta de producto, Proveedor..." 
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none text-base">
+                                    </div>
+
+                                    <!-- BOTONES DE ACCIÓN ADAPTATIVOS -->
+                                    <div class="grid grid-cols-2 gap-3 pt-2">
+                                        <button type="button" id="btn-venta" onclick="document.getElementById('tipoMovimiento').value === 'venta'?registrar('venta'):alert('Esta registrando una Compra Especifique')" 
+                                            class="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:bg-green-700 active:scale-95 transition text-base disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed cursor-pointer">
+                                            + Registrar Venta
+                                        </button>
+                                        <button type="button" id="btn-compra" onclick="document.getElementById('tipoMovimiento').value === 'venta'?alert('Esta registrando una Compra Especifique'):registrar(document.getElementById('tipoMovimiento').value)" 
+                                            class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:bg-blue-700 active:scale-95 transition text-base disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed cursor-pointer">
+                                            - Registrar Compra
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- PESTAÑA 2: MOSTRAR REGISTROS (Lleva un <div> con una tabla) -->
+                        <div class="tab-pane fade" id="registros-pane" role="tabpanel" aria-labelledby="registros-tab" tabindex="0">
+                            <div class="card p-4 shadow-sm space-y-2">
+                                <!-- Input del Buscador Dinámico -->
+                                <div class="mb-4">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark text-white">🔍</span>
+                                        <input type="text" id="buscador" class="form-control" placeholder="Buscar por descripción...">
+                                    </div>
+                                </div>                                
+                                <!-- Tabla donde JavaScript renderizará los movimientos del arreglo -->
+                                <!--   <div class="table-responsive">
+                                        <table class="table table-striped table-hover">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Fecha</th>
+                                                    <th>Tipo</th>
+                                                    <th>Descripción</th>
+                                                    <th>Monto</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="historial">
+                                                <!- JS va a inyectar las filas aquí dinámicamente ->
+                                            </tbody>
+                                        </table>
+                                    </div> -->
+                                 
+                                <!-- HISTORIAL RECIENTE -->  
+                                <div id="historial" class="max-h-90 overflow-y-auto space-y-2 text-sm pr-1">
+                                        <p class="text-gray-400 text-center text-xs py-2">No hay movimientos registrados.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+            </div>
+
             
-            const monto = parseFloat(inputMonto.value);
-            const descripcion = inputDesc.value.trim();
+        </div>   
+        
+            <!-- LÓGICA DE CONTROL (JAVASCRIPT) WITH LOCALSTORAGE PERSISTENCE -->
+        <script>
+                //                      https://share.google/aimode/S4q6sLUIUrhofynZr  https://share.google/aimode/fDFkE9hiQd0171Sq1
+                let limite = 70;
+                let totalVentas = 0;
+                let totalCompras = 0;
+                let movimientos = [];
+                let movimientosT = [];
 
-            if (!monto || monto <= 0 || descripcion === "") {
-                alert("Por favor, ingresa un monto válido y una descripción.");
-                return;
-            }
+                // Cargar datos al iniciar
+                window.onload = function() {
+                    if (localStorage.getItem('totalVentas')) totalVentas = parseFloat(localStorage.getItem('totalVentas'));
+                    if (localStorage.getItem('totalCompras')) totalCompras = parseFloat(localStorage.getItem('totalCompras'));
+                    if (localStorage.getItem('movimientos')) movimientos = JSON.parse(localStorage.getItem('movimientos'));
+                    
+                     renderHistorial(movimientos);  // renderizarTabla(movimientos); //
+                    actualizarInterfaz();
+                };
 
-            if (tipo === 'compra') {
-                let proximaInversion = totalCompras + monto;
-                let proximoPorcentaje = totalVentas > 0 ? (proximaInversion / totalVentas) * 100 : 100;
-                if (proximoPorcentaje > limite) {
-                    alert(`No puedes registrar esta compra. Superaría el límite del ${(limite)}% permitido respecto a tus ventas actuales.`);
-                    return;
+                function guardarDatos() {
+                    localStorage.setItem('totalVentas', totalVentas);
+                    localStorage.setItem('totalCompras', totalCompras);
+                    localStorage.setItem('movimientos', JSON.stringify(movimientos));
                 }
-            }
 
-            if (tipo === 'venta') {
-                totalVentas += monto;
-            } else {
-                totalCompras += monto;
-            }
+/*
+//####################################################################################
+// URL base de tu Azure Function App (reemplázala por tu URL real de Azure)
+const AZURE_FUNCTION_URL = "https://tu-app-functions.azurewebsites.net/api/gestionMovimientos"; 
 
-            movimientos.unshift({ tipo, monto, descripcion });
+// Evento de carga inicial modificado
+window.onload = async function() {
+    try {
+    console.log("Cargando datos desde Azure Cosmos DB...");
+    const respuesta = await fetch(AZURE_FUNCTION_URL); 
 
-            inputMonto.value = "";
-            inputDesc.value = "";
-            
-            guardarDatos();
-            renderHistorial();
-            actualizarInterfaz();
-        }  
-//Controlar exportación de datos
-function exportarDatos() {
-    // 1. Obtener todos los datos de localStorage
-    const datos = JSON.stringify(localStorage);
-    
-    // 2. Crear un archivo temporal con los datos
-    const blob = new Blob([datos], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    
-    // 3. Crear un enlace oculto para forzar la descarga
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "mis_datos_backup.json"; // Nombre del archivo
-    document.body.appendChild(a);
-    a.click();
-    
-    // 4. Limpiar el elemento temporal
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    if (respuesta.ok) {
+        const datos = await respuesta.json();
+        
+        // Si existen datos en Cosmos DB, los asignamos. Si no, usamos los valores por defecto.
+        totalVentas = datos.totalVentas !== undefined ? parseFloat(datos.totalVentas) : 0;
+        totalCompras = datos.totalCompras !== undefined ? parseFloat(datos.totalCompras) : 0;
+        movimientos = datos.movimientos || [];
+    } else {
+        console.warn("No se pudieron obtener datos, se inicializa en 0.");
+    }
+
+    } catch (error) {
+    console.error("Error de conexión con Azure:", error);
+    }
+
+    // Ejecutamos tus funciones de renderizado actuales con los datos obtenidos
+    renderHistorial(movimientos);
+    actualizarInterfaz();
+
+}; 
+
+// Función para guardar modificada
+async function guardarDatos() {
+        // Agrupamos todo en un único objeto para guardarlo en un solo documento de Cosmos DB
+    const payload = {
+    id: "datos_globales", // ID fijo para sobrescribir siempre el mismo registro de estado
+    totalVentas: totalVentas,
+    totalCompras: totalCompras,
+    movimientos: movimientos
+    }; 
+
+    try {
+    const respuesta = await fetch(AZURE_FUNCTION_URL, {
+    method: 'POST',
+    headers: {
+    'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+    });
+    if (!respuesta.ok) {
+        throw new Error("Error al sincronizar con Azure");
+    }
+    console.log("Sincronización con Cosmos DB exitosa.");
+
+    } catch (error) {
+    console.error("Error al guardar en la nube:", error);
+    }               
+
 }
-function importarDatos(evento) {
-    const archivo = evento.target.files[0];
-    if (!archivo) return;
+*/
+//####################################################################################
+                function actualizarInterfaz() {  
+                    document.getElementById('txt-total-ventas').innerText = `$${totalVentas.toFixed(0)}`;
+                    document.getElementById('txt-total-utilidad').innerText = `$${(totalVentas-totalCompras).toFixed(0)}`;
+                    document.getElementById('txt-total-compras').innerText = `$${totalCompras.toFixed(0)}`;
 
-    const lector = new FileReader();
-    lector.onload = function(e) {
-        try {
-            // 1. Leer y procesar el contenido del archivo
-            const datos = JSON.parse(e.target.result);
-            
-            // 2. Guardar cada clave-valor en el nuevo localStorage
-            Object.keys(datos).forEach(clave => {
-                localStorage.setItem(clave, datos[clave]);
-            });
+                    let porcentaje = 0;
+                    if (totalVentas > 0) {
+                        porcentaje = (totalCompras / totalVentas) * 100;
+                    } else if (totalCompras > 0) {
+                        porcentaje = 100;
+                    }
 
-            alert("¡Datos importados con éxito! Recarga la página para ver los cambios.");
-            location.reload(); // Recarga la página automáticamente
-        } catch (error) {
-            alert("Error al importar: El archivo no es válido.");
-        }
-    };
-    lector.readAsText(archivo);
-}
+                    const barra = document.getElementById('barra-progreso');
+                    const labelPorcentaje = document.getElementById('label-porcentaje');
+                    const alertaLimite = document.getElementById('alerta-limite');
+                    const btnCompra = document.getElementById('btn-compra');
+
+                    labelPorcentaje.innerText = `Límite: ${porcentaje.toFixed(1)}% de ${limite}%`;
+                    alertaLimite.innerText = `Disponible: $${((totalVentas * limite / 100) - totalCompras).toFixed(2)}`;
+                    barra.style.width = `${Math.min(porcentaje, 100)}%`;
+
+                    if (porcentaje >= limite) {
+                        barra.className = "bg-red-500 h-full transition-all duration-300";
+                        alertaLimite.innerText = "¡Límite Superado!";
+                        alertaLimite.className = "text-red-600 font-bold";
+                        btnCompra.disabled = true;
+                    } else if (porcentaje >= limite / 7 * 5) {
+                        barra.className = "bg-amber-500 h-full transition-all duration-300";
+                        alertaLimite.className = "text-amber-600 font-bold";
+                        btnCompra.disabled = false;
+                    } else {
+                        barra.className = "bg-green-500 h-full transition-all duration-300";
+                        alertaLimite.className = "text-green-600 font-bold";
+                        btnCompra.disabled = false;
+                    }
+                }
+
+                function renderHistorial(lista) {
+                    const historial = document.getElementById('historial');
+                    if (lista.length === 0) {
+                        historial.innerHTML = '<p class="text-gray-400 text-center text-xs py-2">No hay movimientos registrados.</p>';
+                        return;
+                    }
+
+                    historial.innerHTML = "";
+                    lista.forEach(mov => {
+                        const item = document.createElement('div');
+                        item.className = `flex justify-between items-center p-2 rounded-lg border text-xs ${mov.tipo === 'venta' ? 'bg-green-50 border-green-100 text-green-800' : mov.tipo==='inversion' ?'bg-blue-50 border-blue-100 text-blue-800': 'bg-blue-50 border-blue-100 text-amber-600'}`;
+                        item.innerHTML = `
+                            <div>
+                                <span class="font-bold block">${mov.tipo.toUpperCase()}: ${mov.fecha + "<br>" + mov.descripcion}</span>
+                            </div>
+                            <span class="font-bold text-sm">${mov.tipo === 'venta' ? '+' : '-'}$${mov.monto.toFixed(2)}</span>
+                        `;
+                        historial.appendChild(item);
+                    });
+                }
+
+                function registrar(tipo) {
+                    const inputMonto = document.getElementById('monto');
+                    const inputDesc = document.getElementById('descripcion');
+                    
+                    const monto = parseFloat(inputMonto.value);
+                    const descripcion = inputDesc.value.trim();
+
+                    if (!monto || monto <= 0 || descripcion === "") {
+                        alert("Por favor, ingresa un monto válido y una descripción.");
+                        return;
+                    }
+
+                    if (tipo === 'compra') {
+                        let proximaInversion = totalCompras + monto;
+                        let proximoPorcentaje = totalVentas > 0 ? (proximaInversion / totalVentas) * 100 : 100;
+                        if (proximoPorcentaje > limite) {
+                            alert(`No puedes registrar esta compra. Superaría el límite del ${(limite)}% permitido respecto a tus ventas actuales.`);
+                            return;
+                        }
+                    }
+
+                    if (tipo === 'venta') {
+                        totalVentas += monto;
+                    } else {
+                        totalCompras += monto;
+                    }
+                    const fecha =  (new Date().toISOString().split('T')[0]);
+                    movimientos.unshift({ fecha, tipo, monto, descripcion });
+
+                    inputMonto.value = "";
+                    inputDesc.value = "";
+                    
+                    guardarDatos();
+                    renderHistorial(movimientos);
+                    actualizarInterfaz();
+                }  
+            //Controlar exportación de datos
+            function exportarDatos() {
+                // 1. Obtener todos los datos de localStorage
+                const datos = JSON.stringify(localStorage);
+                
+                // 2. Crear un archivo temporal con los datos
+                const blob = new Blob([datos], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                
+                // 3. Crear un enlace oculto para forzar la descarga
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "mis_datos_backup.json"; // Nombre del archivo
+                document.body.appendChild(a);
+                a.click();
+                
+                // 4. Limpiar el elemento temporal
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+            function importarDatos(evento) {
+                const archivo = evento.target.files[0];
+                if (!archivo) return;
+
+                const lector = new FileReader();
+                lector.onload = function(e) {
+                    try {
+                        // 1. Leer y procesar el contenido del archivo
+                        const datos = JSON.parse(e.target.result);
+                        
+                        // 2. Guardar cada clave-valor en el nuevo localStorage
+                        Object.keys(datos).forEach(clave => {
+                            localStorage.setItem(clave, datos[clave]);
+                        });
+
+                        alert("¡Datos importados con éxito! Recarga la página para ver los cambios.");
+                        location.reload(); // Recarga la página automáticamente
+                    } catch (error) {
+                        alert("Error al importar: El archivo no es válido.");
+                    }
+                };
+                lector.readAsText(archivo);
+            }
+                
+            // Opción de historial en Tabla
+            // Referencias a los elementos del HTML
+                const formulario = document.getElementById('form-registro');
+                const tablaRegistros = document.getElementById('historial');
+                const buscador = document.getElementById('buscador');
+
+                // Escuchar cuando el usuario procesa el formulario
+                formulario.addEventListener('submit', (e) => {
+                    e.preventDefault(); // Evitamos que la página se recargue
+
+                    // 1. Capturamos los datos ingresados
+                    const nuevaFecha = new Date().toISOString().split('T')[0]; //document.getElementById('fecha').value;
+                    const nuevoTipo = document.querySelector('input[name="tipo"]:checked').value;
+                    const nuevaDescripcion = document.getElementById('descripcion').value;
+                    const nuevoMonto = parseFloat(document.getElementById('monto').value);
+
+                    // 2. Creamos el nuevo objeto movimiento y lo añadimos al arreglo
+                        const nuevoMovimiento = {
+                            id: idContador++,
+                            fecha: nuevaFecha,
+                            tipo: nuevoTipo,
+                            descripcion: nuevaDescripcion,
+                            monto: nuevoMonto
+                        };
+                    movimientosT.push(nuevoMovimiento);
+
+                    // 3. Limpiamos el formulario para una nueva captura
+                    formulario.reset();
+
+                    // 4. Actualizamos la visualización en la segunda pestaña
+                    renderizarTabla(movimientosT);
+                    
+                    // Opcional: Si quieres llevar al usuario automáticamente a ver los registros tras guardar
+                    const bootstrapTab = new bootstrap.Tab(document.getElementById('registros-tab'));
+                    bootstrapTab.show();
+                });
+                // --- EVENTO 2: BUSCADOR DINÁMICO (Línea de código clave) ---
+                buscador.addEventListener('input', (e) => {
+                    const textoBusqueda = e.target.value.toLowerCase();
+
+                    // Filtramos el arreglo original usando .filter y .includes
+                    const movimientosFiltrados = movimientos.filter(movimiento => 
+                        movimiento.descripcion.toLowerCase().includes(textoBusqueda)
+                    );
+
+                    // Renderizamos solo los movimientos que coincidieron con la búsqueda
+                    renderizarTabla(movimientosFiltrados);
+                });
+                // Función encargada de pintar los datos en la Pestaña 2
+                function renderizarTabla(Lista) {
+                    // Vaciamos la tabla anterior para evitar duplicados
+                    tablaRegistros.innerHTML = '';
+
+                    // Recorremos el arreglo de movimientos para rellenar el div/tabla
+                    Lista.forEach((movimiento) => {
+                        const fila = document.createElement('tr');
+                        fila.innerHTML = `
+                            <td>${movimiento.id}</td>
+                            <td>${movimiento.fecha}</td>
+                            <td>${movimiento.tipo}</td>
+                            <td>${movimiento.descripcion}</td>
+                            <td>$${movimiento.monto.toFixed(2)}</td>
+                        `;
+                        tablaRegistros.appendChild(fila);
+                    });
+                }
 
 
-    </script>
-    <script src="https://miyuro.one/scripts/miyuro.one.js"></script>
-</body>
+        </script>
+        <script src="https://miyuro.one/scripts/miyuro.one.js"></script>
+    </body>
 </html>
