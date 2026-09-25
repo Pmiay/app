@@ -209,7 +209,7 @@
         
             <!-- LÓGICA DE CONTROL (JAVASCRIPT) WITH LOCALSTORAGE PERSISTENCE -->
         <script>
-                //                      https://share.google/aimode/S4q6sLUIUrhofynZr  https://share.google/aimode/fDFkE9hiQd0171Sq1
+ 
                 let limite = 70;
                 let totalVentas = 0;
                 let totalCompras = 0;
@@ -234,64 +234,7 @@
 
 /*
 //####################################################################################
-// URL base de tu Azure Function App (reemplázala por tu URL real de Azure)
-const AZURE_FUNCTION_URL = "https://tu-app-functions.azurewebsites.net/api/gestionMovimientos"; 
 
-// Evento de carga inicial modificado
-window.onload = async function() {
-    try {
-    console.log("Cargando datos desde Azure Cosmos DB...");
-    const respuesta = await fetch(AZURE_FUNCTION_URL); 
-
-    if (respuesta.ok) {
-        const datos = await respuesta.json();
-        
-        // Si existen datos en Cosmos DB, los asignamos. Si no, usamos los valores por defecto.
-        totalVentas = datos.totalVentas !== undefined ? parseFloat(datos.totalVentas) : 0;
-        totalCompras = datos.totalCompras !== undefined ? parseFloat(datos.totalCompras) : 0;
-        movimientos = datos.movimientos || [];
-    } else {
-        console.warn("No se pudieron obtener datos, se inicializa en 0.");
-    }
-
-    } catch (error) {
-    console.error("Error de conexión con Azure:", error);
-    }
-
-    // Ejecutamos tus funciones de renderizado actuales con los datos obtenidos
-    renderHistorial(movimientos);
-    actualizarInterfaz();
-
-}; 
-
-// Función para guardar modificada
-async function guardarDatos() {
-        // Agrupamos todo en un único objeto para guardarlo en un solo documento de Cosmos DB
-    const payload = {
-    id: "datos_globales", // ID fijo para sobrescribir siempre el mismo registro de estado
-    totalVentas: totalVentas,
-    totalCompras: totalCompras,
-    movimientos: movimientos
-    }; 
-
-    try {
-    const respuesta = await fetch(AZURE_FUNCTION_URL, {
-    method: 'POST',
-    headers: {
-    'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(payload)
-    });
-    if (!respuesta.ok) {
-        throw new Error("Error al sincronizar con Azure");
-    }
-    console.log("Sincronización con Cosmos DB exitosa.");
-
-    } catch (error) {
-    console.error("Error al guardar en la nube:", error);
-    }               
-
-}
 */
 //####################################################################################
                 function actualizarInterfaz() {  
