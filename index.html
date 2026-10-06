@@ -224,7 +224,7 @@
                 let fecha = new Date();
 
                 // Cargar datos al iniciar
-/*                window.onload = function() {
+                window.onload = function() {
                     if (localStorage.getItem('totalVentas')) totalVentas = parseFloat(localStorage.getItem('totalVentas'));
                     if (localStorage.getItem('totalCompras')) totalCompras = parseFloat(localStorage.getItem('totalCompras'));
                     if (localStorage.getItem('movimientos')) movimientos = JSON.parse(localStorage.getItem('movimientos'));
@@ -238,77 +238,6 @@
                     localStorage.setItem('totalCompras', totalCompras);
                     localStorage.setItem('movimientos', JSON.stringify(movimientos));
                 }
-*/
-//####################################################################################
-/* //json de prueba para enviar
-{
-  "montoVenta": 49.00,
-  "montoCompra": 91.00,
-  "movimiento": [
-  { "id": 4, "tipo": "venta", "monto": 800 },
-  { "id": 5, "tipo": "compa", "monto": 900 }
-  ]
-}
-*///########################################################################################
-// URL base de tu Azure Function App (reemplázala por tu URL real de Azure)
-const AZURE_FUNCTION_URL = "https://registro-bjbca9bugbf8a2er.centralus-01.azurewebsites.net/api/movi"; 
-
-// Evento de carga inicial modificado
-window.onload = async function() {
-    try {
- //   alert("Cargando datos desde Azure Cosmos DB...");
-    const respuesta = await fetch(AZURE_FUNCTION_URL); 
- 
-    if (respuesta.ok) {
-        const datos = await respuesta.json();
-        
-        // Si existen datos en Cosmos DB, los asignamos. Si no, usamos los valores por defecto.
-        totalVentas = datos.totalVentas !== undefined ? parseFloat(datos.totalVentas) : 0;
-        totalCompras = datos.totalCompras !== undefined ? parseFloat(datos.totalCompras) : 0;
-        movimientos = datos.movimientos || [];
-    } else {
-        alert("No se pudieron obtener datos, se inicializa en 0.");
-    }
-
-    } catch (error) {
-    alert("Error de conexión con Azure:", error);
-    }
-
-    // Ejecutamos tus funciones de renderizado actuales con los datos obtenidos
-    renderHistorial(movimientos);
-    actualizarInterfaz();
-
-}; 
-
-// Función para guardar modificada
-async function guardarDatos() {
-        // Agrupamos todo en un único objeto para guardarlo en un solo documento de Cosmos DB
-    const payload = {
-    id: "datos_globales", // ID fijo para sobrescribir siempre el mismo registro de estado
-    montoVenta: totalVentas,
-    montoCompra: totalCompras,
-    movimiento: movimientos
-    }; 
-
-    try {
-    const respuesta = await fetch(AZURE_FUNCTION_URL, {
-    method: 'POST',
-    headers: {
-    'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(payload)
-    });
-    if (!respuesta.ok) {
-        throw new Error("Error al sincronizar con Azure");
-    }
-    alert("Sincronización con Cosmos DB exitosa.");
-
-    } catch (error) {
-    alert("Error al guardar en la nube:", error);
-    }               
-
-}
-//####################################################################################
 
  function newDate(nf) {       
             const anio = nf.getFullYear();   
