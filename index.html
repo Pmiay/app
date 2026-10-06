@@ -10,7 +10,7 @@
         <link href="https://miyuro.one/styles/miyuro.one.css" rel="stylesheet">
 
      </head>
-    <body class="bg-gray-100 font-sans min-h-screen flex flex-col items-center p-4">       
+    <body class="bg-gray-100 font-sans min-h-screen flex flex-col items-center p-2 py-5">       
         <nav class="navbar bg-dark navbar-dark navbar-expand-lg fixed-top">
             <div class="container-fluid">
                 <!-- Logo y marca -->
@@ -103,19 +103,25 @@
                         </div>
                     </div>
                 </div>    
-                <hr class="border-gray-200">
+                <!-- <hr class="border-gray-200"> -->
 
-            <div class="container mt-1 pt-4">
+                <div class="text-xs font-semibold text-blue-600 font-bold">
+                    <label for="fechaCalendar" id="fechaLabel" class="clickable-label"> </label>     
+                    <input type="date" id="fechaCalendar" class="hidden-date-input" style="position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;">
+                </div>
+
+
+            <div class="container mt-1 pt-1">
                 <!-- 1. Controladores de las Pestañas (Navegación) -->
                 <ul class="nav nav-tabs mb-4" id="miTab" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="captura-tab" data-bs-toggle="tab" data-bs-target="#captura-pane" type="button" role="tab" aria-controls="captura-pane" aria-selected="true">
-                           📝 Nuevo
+                            📝 Nuevo
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="registros-tab" data-bs-toggle="tab" data-bs-target="#registros-pane" type="button" role="tab" aria-controls="registros-pane" aria-selected="false">
-                           📊 Historial
+                            📊 Historial
                         </button>
                     </li>
                 </ul>
@@ -125,7 +131,7 @@
                         
                         <!-- PESTAÑA 1: CAPTURA Y PROCESAMIENTO (Lleva el <form>) -->
                         <div class="tab-pane fade show active" id="captura-pane" role="tabpanel" aria-labelledby="captura-tab" tabindex="0">
-                            <div class=" p-1 ">
+                            <div class=" p-1">
                                 
                                 <!-- FORMULARIO DE REGISTRO -->
                                 <form id="form-registro" class="space-y-4" onsubmit="event.preventDefault();">
@@ -209,15 +215,16 @@
         
             <!-- LÓGICA DE CONTROL (JAVASCRIPT) WITH LOCALSTORAGE PERSISTENCE -->
         <script>
- 
+                //                      https://share.google/aimode/S4q6sLUIUrhofynZr  https://share.google/aimode/fDFkE9hiQd0171Sq1
                 let limite = 70;
                 let totalVentas = 0;
                 let totalCompras = 0;
                 let movimientos = [];
                 let movimientosT = [];
+                let fecha = new Date();
 
                 // Cargar datos al iniciar
-                window.onload = function() {
+/*                window.onload = function() {
                     if (localStorage.getItem('totalVentas')) totalVentas = parseFloat(localStorage.getItem('totalVentas'));
                     if (localStorage.getItem('totalCompras')) totalCompras = parseFloat(localStorage.getItem('totalCompras'));
                     if (localStorage.getItem('movimientos')) movimientos = JSON.parse(localStorage.getItem('movimientos'));
@@ -231,16 +238,124 @@
                     localStorage.setItem('totalCompras', totalCompras);
                     localStorage.setItem('movimientos', JSON.stringify(movimientos));
                 }
-
-/*
-//####################################################################################
-
 */
 //####################################################################################
+/* //json de prueba para enviar
+{
+  "montoVenta": 49.00,
+  "montoCompra": 91.00,
+  "movimiento": [
+  { "id": 4, "tipo": "venta", "monto": 800 },
+  { "id": 5, "tipo": "compa", "monto": 900 }
+  ]
+}
+*///########################################################################################
+// URL base de tu Azure Function App (reemplázala por tu URL real de Azure)
+const AZURE_FUNCTION_URL = "https://registro-bjbca9bugbf8a2er.centralus-01.azurewebsites.net/api/movi"; 
+
+// Evento de carga inicial modificado
+window.onload = async function() {
+    try {
+ //   alert("Cargando datos desde Azure Cosmos DB...");
+    const respuesta = await fetch(AZURE_FUNCTION_URL); 
+ 
+    if (respuesta.ok) {
+        const datos = await respuesta.json();
+        
+        // Si existen datos en Cosmos DB, los asignamos. Si no, usamos los valores por defecto.
+        totalVentas = datos.totalVentas !== undefined ? parseFloat(datos.totalVentas) : 0;
+        totalCompras = datos.totalCompras !== undefined ? parseFloat(datos.totalCompras) : 0;
+        movimientos = datos.movimientos || [];
+    } else {
+        alert("No se pudieron obtener datos, se inicializa en 0.");
+    }
+
+    } catch (error) {
+    alert("Error de conexión con Azure:", error);
+    }
+
+    // Ejecutamos tus funciones de renderizado actuales con los datos obtenidos
+    renderHistorial(movimientos);
+    actualizarInterfaz();
+
+}; 
+
+// Función para guardar modificada
+async function guardarDatos() {
+        // Agrupamos todo en un único objeto para guardarlo en un solo documento de Cosmos DB
+    const payload = {
+    id: "datos_globales", // ID fijo para sobrescribir siempre el mismo registro de estado
+    montoVenta: totalVentas,
+    montoCompra: totalCompras,
+    movimiento: movimientos
+    }; 
+
+    try {
+    const respuesta = await fetch(AZURE_FUNCTION_URL, {
+    method: 'POST',
+    headers: {
+    'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+    });
+    if (!respuesta.ok) {
+        throw new Error("Error al sincronizar con Azure");
+    }
+    alert("Sincronización con Cosmos DB exitosa.");
+
+    } catch (error) {
+    alert("Error al guardar en la nube:", error);
+    }               
+
+}
+//####################################################################################
+
+ function newDate(nf) {       
+            const anio = nf.getFullYear();   
+            const mes = String(nf.getMonth() + 1).padStart(2, '0'); 
+            const dia = String(nf.getDate()).padStart(2, '0');
+             
+
+            nf = new Date(`${anio}/${mes}/${dia} 12:00:00`);
+            fecha = nf; 
+            document.getElementById('fechaLabel').textContent = FechaEspanol(nf); 
+        }
+        // Escuchar cuando el usuario cambia la fecha en el calendario
+        document.getElementById('fechaCalendar').addEventListener('change', (e) => {
+            if (e.target.value) { 
+                dth = new Date(e.target.valueAsDate.getTime() + e.target.valueAsDate.getTimezoneOffset() * 60000);
+                newDate(dth);
+            }
+        });
+         document.getElementById('fechaLabel').addEventListener('click', () => {
+            if (typeof calendarInput.showPicker === 'function') {
+                calendarInput.showPicker();
+            }
+        });
+        function FechaEspanol(fechaString) {  
+
+            const fechaObjeto = new Date(fechaString); 
+                                
+            const opciones = { 
+                weekday: 'long', 
+                day: 'numeric', 
+                month: 'short', 
+                year: 'numeric'
+            };
+//alert(fechaObjeto); 
+            let fechaFormateada = new Intl.DateTimeFormat('es-ES', opciones).format(fechaObjeto); 
+
+            return fechaFormateada;
+        }
+////
                 function actualizarInterfaz() {  
                     document.getElementById('txt-total-ventas').innerText = `$${totalVentas.toFixed(0)}`;
                     document.getElementById('txt-total-utilidad').innerText = `$${(totalVentas-totalCompras).toFixed(0)}`;
                     document.getElementById('txt-total-compras').innerText = `$${totalCompras.toFixed(0)}`;
+                    //document.getElementById('fechaCalendar').value= (new Date().toISOString().split('T')[0]);
+                     //newDate((new Date().toISOString().split('T')[0])); 
+                     
+                     newDate(fecha);
 
                     let porcentaje = 0;
                     if (totalVentas > 0) {
@@ -321,7 +436,8 @@
                     } else {
                         totalCompras += monto;
                     }
-                    const fecha =  (new Date().toISOString().split('T')[0]);
+                    //const fecha =  (new Date().toISOString().split('T')[0]);
+                    const fecha = document.getElementById('fechaCalendar').value.toISOString().split('T')[0];
                     movimientos.unshift({ fecha, tipo, monto, descripcion });
 
                     inputMonto.value = "";
