@@ -239,6 +239,18 @@
                     localStorage.setItem('movimientos', JSON.stringify(movimientos));
                 }
 
+//####################################################################################
+/* //json de prueba para enviar
+{
+  "montoVenta": 49.00,
+  "montoCompra": 91.00,
+  "movimiento": [
+  { "id": 4, "tipo": "venta", "monto": 800 },
+  { "id": 5, "tipo": "compa", "monto": 900 }
+  ]
+}
+*///########################################################################################
+
  function newDate(nf) {       
             const anio = nf.getFullYear();   
             const mes = String(nf.getMonth() + 1).padStart(2, '0'); 
@@ -247,7 +259,8 @@
 
             nf = new Date(`${anio}/${mes}/${dia} 12:00:00`);
             fecha = nf; 
-            document.getElementById('fechaLabel').textContent = FechaEspanol(nf); 
+            document.getElementById('fechaLabel').textContent = FechaEspanol(nf);
+            document.getElementById('fechaCalendar').value= fecha; 
         }
         // Escuchar cuando el usuario cambia la fecha en el calendario
         document.getElementById('fechaCalendar').addEventListener('change', (e) => {
@@ -366,7 +379,9 @@
                         totalCompras += monto;
                     }
                     //const fecha =  (new Date().toISOString().split('T')[0]);
-                    const fecha = document.getElementById('fechaCalendar').value.toISOString().split('T')[0];
+                    //const fecha = document.getElementById('fechaCalendar').value;//.toISOString().split('T')[0];
+                   
+                    fecha=fecha.toISOString().split('T')[0];  
                     movimientos.unshift({ fecha, tipo, monto, descripcion });
 
                     inputMonto.value = "";
