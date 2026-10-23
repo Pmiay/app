@@ -567,8 +567,8 @@
                 } 
                 function linkWp(inputElement) {
                     const prefijo = document.getElementById("wprefijo").value; 
-
-                    const numero = inputElement.replace(/[\s\-()+]/g, '') || "1";
+                    
+                    const numero = inputElement.value.replace(/[\s\-()+]/g, '')  || "1";
                     const textoBase = encodeURIComponent("¡Hola! Me interesa.");
                     const botonWhatsapp = document.getElementById("wbtn");
                     botonWhatsapp.href = `https://wa.me/${prefijo}${numero}?text=${textoBase}`;
