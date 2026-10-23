@@ -70,8 +70,8 @@
                                         <option value="506">🇨🇷 +506 (CR)</option>
                                     </select>
                                 <!-- Input para que el usuario escriba el número/código -->
-                                <input type="number" id="winput" value="" min="1" placeholder="65551234"
-                                    style="width: 95; padding: 6px; border: 1px solid #ccc; border-radius: 4px; text-align: center;"
+                                <input type="tel" id="winput" value="" min="1" placeholder="Número de celular"
+                                    style="width: 130px; padding: 5px; border: 1px solid #ccc; border-radius: 4px;"
                                     oninput="linkWp(this)">
                                 
                                 <!-- El botón mantiene tu imagen y se actualizará dinámicamente -->
@@ -568,8 +568,8 @@
                 function linkWp(inputElement) {
                     const prefijo = document.getElementById("wprefijo").value; 
 
-                    const numero = inputElement.replace(/\s+/g, '') || "1";
-                    const textoBase = "Me%20interesa%20el%20numero%20";
+                    const numero = inputElement.replace(/[\s\-()+]/g, '') || "1";
+                    const textoBase = encodeURIComponent("¡Hola! Me interesa.");
                     const botonWhatsapp = document.getElementById("wbtn");
                     botonWhatsapp.href = `https://wa.me/${prefijo}${numero}?text=${textoBase}`;
                     
