@@ -53,14 +53,25 @@
                                 </label>
                                 <input type="file" id="input-importar" accept=".json" onchange="importarDatos(event)" style="display: none;">
                             </li>
-                            <li class="nav-item" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px;">
+                            <li class="nav-item " style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px;">
                                 <label for="winput" style="margin: 0; font-family: sans-serif;">
                                     Escribir Whatsapp #
                                 </label>
-                                
+                                    <select id="wprefijo" onchange="linkWp()" class="bg-dark text-white"
+                                            style="padding: 6px; border: 1px solid #ccc; border-radius: 4px;  cursor: pointer;">
+                                        <option value="507" selected>🇵🇦 +507 (PA)</option>
+                                        <option value="1">🇺🇸 +1 (US/CA)</option>
+                                        <option value="34">🇪🇸 +34 (ES)</option>
+                                        <option value="52">🇲🇽 +52 (MX)</option>
+                                        <option value="54">🇦🇷 +54 (AR)</option>
+                                        <option value="56">🇨🇱 +56 (CL)</option>
+                                        <option value="57">🇨🇴 +57 (CO)</option>
+                                        <option value="58">🇻🇪 +58 (VE)</option>
+                                        <option value="506">🇨🇷 +506 (CR)</option>
+                                    </select>
                                 <!-- Input para que el usuario escriba el número/código -->
                                 <input type="number" id="winput" value="" min="1" placeholder="65551234"
-                                    style="width: 95; padding: 5px; border: 1px solid #ccc; border-radius: 4px; text-align: center;"
+                                    style="width: 95; padding: 6px; border: 1px solid #ccc; border-radius: 4px; text-align: center;"
                                     oninput="linkWp(this)">
                                 
                                 <!-- El botón mantiene tu imagen y se actualizará dinámicamente -->
@@ -555,10 +566,13 @@
                     });
                 } 
                 function linkWp(inputElement) {
-                    const numero = inputElement.value || "1";
+                    const prefijo = document.getElementById("wprefijo").value; 
+
+                    const numero = inputElement.replace(/\s+/g, '') || "1";
                     const textoBase = "Me%20interesa%20el%20numero%20";
                     const botonWhatsapp = document.getElementById("wbtn");
-                    botonWhatsapp.href = `https://wa.me/${numero}?text=${textoBase}`;
+                    botonWhatsapp.href = `https://wa.me/${prefijo}${numero}?text=${textoBase}`;
+                    
                 }
 
         </script>
