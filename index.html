@@ -53,6 +53,21 @@
                                 </label>
                                 <input type="file" id="input-importar" accept=".json" onchange="importarDatos(event)" style="display: none;">
                             </li>
+                            <li class="nav-item" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px;">
+                                <label for="winput" style="margin: 0; font-family: sans-serif;">
+                                    Escribir Whatsapp #
+                                </label>
+                                
+                                <!-- Input para que el usuario escriba el número/código -->
+                                <input type="number" id="winput" value="" min="1" placeholder="65551234"
+                                    style="width: 95; padding: 5px; border: 1px solid #ccc; border-radius: 4px; text-align: center;"
+                                    oninput="linkWp(this)">
+                                
+                                <!-- El botón mantiene tu imagen y se actualizará dinámicamente -->
+                                <a href="https://wa.me" id="wbtn" target="_blank"> 
+                                    <img src="images/btn_w.png" width="64" height="64" alt="Enviar WhatsApp">
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -538,8 +553,13 @@
                         `;
                         tablaRegistros.appendChild(fila);
                     });
+                } 
+                function linkWp(inputElement) {
+                    const numero = inputElement.value || "1";
+                    const textoBase = "Me%20interesa%20el%20numero%20";
+                    const botonWhatsapp = document.getElementById("wbtn");
+                    botonWhatsapp.href = `https://wa.me/${numero}?text=${textoBase}`;
                 }
-
 
         </script>
         <script src="https://miyuro.one/scripts/miyuro.one.js"></script>
