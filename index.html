@@ -68,6 +68,7 @@
                                         <option value="57">🇨🇴 +57 (CO)</option>
                                         <option value="58">🇻🇪 +58 (VE)</option>
                                         <option value="506">🇨🇷 +506 (CR)</option>
+                                        <option value="+">()</option>
                                     </select>
                                 <!-- Input para que el usuario escriba el número/código -->
                                 <input type="tel" id="winput" value="" min="1" placeholder="Número de celular"
@@ -456,12 +457,12 @@ cinta.addEventListener('change', () => {
                 }
                     function eliminarRegistro(index) { 
                         //alert("aqui " + movimientos[index].tipo);
-                        if(movimientos[index].tipo === 'venta'){
+                    /*    if(movimientos[index].tipo === 'venta'){
                             totalVentas -= movimientos[index].monto;
                         } else{
                             totalCompras -= movimientos[index].monto;
                         }
-                        movimientos.splice(index, 1); 
+                    */    movimientos.splice(index, 1); 
 
                         guardarDatos(); 
                         renderHistorial(movimientos); 
