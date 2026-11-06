@@ -130,10 +130,22 @@
                     </div>
                 </div>    
                 <!-- <hr class="border-gray-200"> -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="text-xs font-semibold text-blue-600 font-bold">
+                        <label for="fechaCalendar" id="fechaLabel" class="clickable-label"> </label>     
+                        <input type="date" id="fechaCalendar" class="hidden-date-input" style="position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;">
+                    </div>
+                    <div class="radio-tabs text-xs text-blue-600" id="radio-tabs">
+                        <input type="radio" id="dia" name="periodo" value="dia">  <!-- checked -->
+                        <label for="dia">Día</label>
 
-                <div class="text-xs font-semibold text-blue-600 font-bold">
-                    <label for="fechaCalendar" id="fechaLabel" class="clickable-label"> </label>     
-                    <input type="date" id="fechaCalendar" class="hidden-date-input" style="position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;">
+                        <input type="radio" id="semana" name="periodo" value="semana">
+                        <label for="semana">Semana</label>
+
+                        <input type="radio" id="mes" name="periodo" value="mes">
+                        <label for="mes">Mes</label>
+                    </div>
+
                 </div>
 
 
@@ -262,17 +274,18 @@
 
                 // Cargar datos al iniciar
                 window.onload = function() {
-                    if (localStorage.getItem('totalVentas')) totalVentas = parseFloat(localStorage.getItem('totalVentas'));
-                    if (localStorage.getItem('totalCompras')) totalCompras = parseFloat(localStorage.getItem('totalCompras'));
+                    //if (localStorage.getItem('totalVentas')) totalVentas = parseFloat(localStorage.getItem('totalVentas'));
+                    //if (localStorage.getItem('totalCompras')) totalCompras = parseFloat(localStorage.getItem('totalCompras'));
                     if (localStorage.getItem('movimientos')) movimientos = JSON.parse(localStorage.getItem('movimientos'));
                     
                      renderHistorial(movimientos);  // renderizarTabla(movimientos); //
+                     totales(movimientos);
                     actualizarInterfaz();
                 };
 
                 function guardarDatos() {
-                    localStorage.setItem('totalVentas', totalVentas);
-                    localStorage.setItem('totalCompras', totalCompras);
+                    //localStorage.setItem('totalVentas', totalVentas);
+                    //localStorage.setItem('totalCompras', totalCompras);
                     localStorage.setItem('movimientos', JSON.stringify(movimientos));
                 }
 
@@ -329,14 +342,14 @@
             return fechaFormateada;
         }
 ////
-                function actualizarInterfaz() {  
+                function actualizarInterfaz() {                      
                     document.getElementById('txt-total-ventas').innerText = `$${totalVentas.toFixed(0)}`;
                     document.getElementById('txt-total-utilidad').innerText = `$${(totalVentas-totalCompras).toFixed(0)}`;
                     document.getElementById('txt-total-compras').innerText = `$${totalCompras.toFixed(0)}`;
                     //document.getElementById('fechaCalendar').value= (new Date().toISOString().split('T')[0]);
                      //newDate((new Date().toISOString().split('T')[0])); 
                      
-                     newDate(fecha);
+                     newDate(fecha);                     
 
                     let porcentaje = 0;
                     if (totalVentas > 0) {
@@ -368,6 +381,44 @@
                         alertaLimite.className = "text-green-600 font-bold";
                         btnCompra.disabled = false;
                     }
+                }
+// Seleccionamos la cinta de opciones
+const cinta = document.getElementById('radio-tabs');
+
+// Escuchamos cuando cambie la selección
+cinta.addEventListener('change', () => {
+  // Usamos la sentencia única para obtener el valor actual
+  const estado = document.querySelector('input[name="periodo"]:checked').value;
+ 
+    let fIni = new Date(fecha); 
+    let fFin = new Date(fecha);
+        
+    if(estado === "dia"){
+       
+    }else if(estado === "semana"){
+            fFin.setDate(fFin.getDate() - (fFin.getDay() === 0 ? 6 : fFin.getDay() - 1));
+        }else if(estado === "mes"){            
+            fFin.setDate(1); //fFin.setMonth(Ffin.getMonth() - 1);
+        }
+        fFin.setDate(fFin.getDate() - 1); 
+    let lista=movimientos.filter(registro => {
+                                                    const fechaRegistro = new Date(registro.FRegistro);
+
+                                                    // Verifica si la fecha está dentro del rango (inclusive)
+                                                    return fechaRegistro >= fFin && fechaRegistro <= fIni;
+                                                }); 
+    lista.sort((a, b) => new Date(b.FRegistro) - new Date(a.FRegistro));                                                
+    renderHistorial(lista); 
+    totales(lista);
+    actualizarInterfaz();
+});
+                function totales(lista){   
+                    totalVentas = totalCompras = 0;
+                    lista.forEach(item => {
+                    if (item.tipo === 'venta') {
+                        totalVentas += Number(item.monto);
+                    }else{totalCompras += Number(item.monto);}
+                    });                    
                 }
 
                 function renderHistorial(lista) {
@@ -414,6 +465,7 @@
 
                         guardarDatos(); 
                         renderHistorial(movimientos); 
+                        totales(movimientos);
                         actualizarInterfaz();
                     }
                 function registrar(tipo) {
@@ -453,6 +505,7 @@
                     
                     guardarDatos();
                     renderHistorial(movimientos);
+                    totales(movimientos);
                     actualizarInterfaz();
                 }  
             //Controlar exportación de datos
@@ -568,7 +621,7 @@
                 function linkWp(inputElement) {
                     const prefijo = document.getElementById("wprefijo").value; 
                     
-                    const numero = inputElement.value.replace(/[\s\-()+]/g, '')  || "1";
+                    const numero = inputElement.value.replace(/[\s\-()+]/g, '')  || "1"; // numeroOriginal.replace(/\D/g, '');
                     const textoBase = encodeURIComponent("¡Hola! Me interesa.");
                     const botonWhatsapp = document.getElementById("wbtn");
                     botonWhatsapp.href = `https://wa.me/${prefijo}${numero}?text=${textoBase}`;
