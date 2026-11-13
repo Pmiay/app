@@ -275,7 +275,7 @@
     const { JSDOM } = require('jsdom');
     
 async function rasparWeb(codigo) {
-        const url ="https://miyuroone.azurewebsites.net/api/Valores?name="+codigo;
+        const url ="https://miyuroone.azurewebsites.net/api/Valores" //?name="+codigo;
     
     try { 
         // 1. Realizar la consulta / fetch a la URL 
@@ -296,7 +296,7 @@ async function rasparWeb(codigo) {
 
  async function simularPeticionOficialFecha() { 
   
-        const datos = await rasparWeb();
+        const datos = await rasparWeb(12354);
         const info = datos.Resultado; 
   
         // Simulación exacta del comportamiento del DOM de lnb.gob.pa
