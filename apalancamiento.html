@@ -425,7 +425,7 @@ async function rasparWeb(codigo) {
                 ${tipoLetra !== 'Z' ? `<div class="prize-row"><span>Tercer Premio:</span><span class="prize-val">${datos.Resultado.tercerP}</span></div>` : ''}
             </div>
         `;   
-        alert(boardValidationHTML);     
+           
         document.getElementById('injected-board-validation').innerHTML = boardValidationHTML;
 
         const fechaSorteo = new Date(datos.Resultado.fecha);
