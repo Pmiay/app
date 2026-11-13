@@ -195,7 +195,7 @@
     <!-- SECCIÓN 2: VALIDAR BILLETE -->
     <div id="section-valid" class="section">
         <h2>Validación de Fracciones oficiales</h2>
-        <p>Utiliza la cámara para escanear el código de barras o simula la lectura digital del billete.</p>
+        <p>Utiliza la cámara para escanear el código de barras</p>
         
         <div id="reader"></div>
         
@@ -207,6 +207,20 @@
         
         <div id="validation-match-result"></div>
         <div id="injected-board-validation"></div>
+
+        <h2>Historial de Billetes Escaneados</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sorteo</th>
+                    <th>Número</th>
+                    <th>Serie/Folio</th>
+                    <th>Resultado / Justificación</th>
+                    <th>Monto Est.</th>
+                </tr>
+            </thead>
+            <tbody id="historial-body"></tbody>
+        </table>        
     </div>
 
 </div>
@@ -218,7 +232,6 @@
         simularPeticionOficialFecha();  
         cargarHistorial();
     };
-
     // Configuración global de tabs
     function switchTab(tab) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -261,24 +274,15 @@
     }
     const { JSDOM } = require('jsdom');
     
-async function rasparWeb() {
-        const url ="https://miyuroone.azurewebsites.net/api/Valores";
+async function rasparWeb(codigo) {
+        const url ="https://miyuroone.azurewebsites.net/api/Valores?name="+codigo;
     
     try { 
-        // 1. Realizar la consulta / fetch a la URL
-        alert("Pre fetch  " + url);
-        const respuesta = await fetch(url);
-        alert("post fetch");
-alert (respuesta);
+        // 1. Realizar la consulta / fetch a la URL 
+        const respuesta = await fetch(url); 
         if (!respuesta.ok) throw new Error("Error en la solicitud");
                 
-                const datos = await respuesta.json();
-                const features = datos.features;                
-
-                if (features.length === 0) {
-                    document.body.innerHTML = "<p>No hay datos disponibles en el rango seleccionado.</p>";
-                    return;
-                }
+                const datos = await respuesta.json();  
                 return datos;
     
     } catch (error) {
@@ -290,11 +294,12 @@ alert (respuesta);
 
 
 
- function simularPeticionOficialFecha() { 
- 
-        const datos =  rasparWeb();
-alert(datos.Resultado.primerP);
-        // Simulación exacta del comportamiento del DOM de lnb.gob.pa reemplazando assets/img/
+ async function simularPeticionOficialFecha() { 
+  
+        const datos = await rasparWeb();
+        const info = datos.Resultado; 
+  
+        // Simulación exacta del comportamiento del DOM de lnb.gob.pa
         const mockBoardWideHTML = `
                         <div class="board-wide" style="--tema-color: #e63946; --tema-glow: rgba(230, 57, 70, 0.4); --tema-bg: rgba(230, 57, 70, 0.08); background: #fff; border-radius: 20px; border: 2px solid var(--tema-color); box-shadow: 0 8px 25px rgba(0,0,0,0.05), 0 0 15px var(--tema-glow); display: flex; flex-direction: column; width: 100%; max-width: 275px; margin: 0 auto; overflow: hidden;">
                             
@@ -302,7 +307,7 @@ alert(datos.Resultado.primerP);
                                 <div class="bwn-logo"><img src="${datos.Resultado.url}" alt="Logo Sorteo" style="height: 40px; filter: drop-shadow(0 2px 3px rgba(255,255,255,0.8));"></div>
                                 <div class="bwn-meta-text" style="text-align: right;">
                                     <span id="sorteo" style="color: #fff; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 3px;">Nº ${datos.Resultado.sorteo}</span>
-                                    <span id="fecha" style="font-size: 12px; color: rgba(255,255,255,0.8); font-weight: 700;">${fecha}</span>
+                                    <span id="fecha" style="font-size: 12px; color: rgba(255,255,255,0.8); font-weight: 700;">${datos.Resultado.fecha}</span>
                                 </div>
                             </div>
 
@@ -330,11 +335,12 @@ alert(datos.Resultado.primerP);
                                     <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #888; font-weight: 800; display: block; margin-bottom: 4px;">Tercero</span>
                                     <div style="font-size: 26px; font-weight: 900; color: #222; letter-spacing: 2px; margin-bottom: 2px; line-height: 1;">${datos.Resultado.tercerP}</div>
                                     <div style="font-size: 10px; color: #888; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px;" title="PANAMA">${datos.Resultado.tercerPAddress}</div>
+                                   
                                 </div>
                             </div>
+                                 ${datos.Resultado.urlOrigen}
                         </div>        
-        `;
-   alert(mockBoardWideHTML);     
+        `;     
         document.getElementById('injected-board-calc').innerHTML = mockBoardWideHTML;
         // Autorellenar el input de forma autónoma con el primer premio extraído
         document.getElementById('calc-input').value = datos.Resultado.primerP;
@@ -401,7 +407,7 @@ alert(datos.Resultado.primerP);
         procesarCodigoBarras(decodedText);
     }
 
-    function procesarCodigoBarras(codigo) {
+    async function procesarCodigoBarras(codigo) {
         if (codigo.length < 12) {
             alert("Código de barras inválido o incompleto.");
             return;
@@ -409,7 +415,9 @@ alert(datos.Resultado.primerP);
 
         const prefijoSorteo = codigo.substring(0, 4);
         const numeroSorteo = parseInt(prefijoSorteo);
+        const serie = codigo.substring(4, 6);  
         const numeroBilleteComprado = codigo.substring(6, 10);
+        const folio = codigo.substring(10, 12);
         
         let tipoLetra = 'D';
         let tipoTexto = 'Dominical';
@@ -424,14 +432,15 @@ alert(datos.Resultado.primerP);
             tipoLetra = 'D';
             tipoTexto = 'Dominical';
         }
-
+         const datos = await rasparWeb(codigo);
+         
         // Simular la extracción de resultados del endpoint específico de la LNB
-        let primerPremioOficial = "3323"; 
-        let segundoPremioOficial = "7307";
-        let tercerPremioOficial = "3848";
-
-        if(tipoLetra === 'I') { primerPremioOficial = "7307"; segundoPremioOficial = "1102"; tercerPremioOficial = "4958"; }
-        if(tipoLetra === 'Z') { primerPremioOficial = "5312"; }
+        let oficial1erPremio = datos.Resultado.primerP; 
+            let oficialLetras = datos.Resultado.letras;
+            let oficialSerie = datos.Resultado.serie;
+            let oficialFolio = datos.Resultado.folio;
+        let oficial2erPremio = datos.Resultado.segundoP;
+        let oficial3erPremio = datos.Resultado.tercerP;
 
         // Inyección del div .board-wide oficial modificando imágenes
         const boardValidationHTML = `
@@ -442,26 +451,65 @@ alert(datos.Resultado.primerP);
                 ${tipoLetra !== 'Z' ? `<div class="prize-row"><span>Segundo Premio:</span><span class="prize-val">${segundoPremioOficial}</span></div>` : ''}
                 ${tipoLetra !== 'Z' ? `<div class="prize-row"><span>Tercer Premio:</span><span class="prize-val">${tercerPremioOficial}</span></div>` : ''}
             </div>
-        `;
-        
+        `;        
         document.getElementById('injected-board-validation').innerHTML = boardValidationHTML;
+
+        const fechaSorteo = new Date(2026, 10, 8); // Mes 10 es Noviembre en JS
+        const fechaActual = new Date(); // Noviembre 2026 (según contexto actual)
+                
+        // Calcular diferencia en meses para la restricción
+        const diffTiempo = Math.abs(fechaActual - fechaSorteo);
+        const diffDias = Math.ceil(diffTiempo / (1000 * 60 * 60 * 24));
+        const esCaducado = diffDias > 90; // Mayor a 3 meses aproximados (90 días)
+
+        let esGanador = false;
+        let montoGanado = 0;
+        let justificacion = "No premiado";
+
+        if (numeroJugado === oficial1erPremio) {
+            esGanador = true;
+            montoGanado = 2000;
+            justificacion = "Primer Premio Completo de 4 Cifras";
+            if(serie === oficialSerie && folio === oficialFolio) {
+                montoGanado += 5000; // Incentivo adicional aproximado
+                justificacion += " + Incentivo de Serie y Folio";
+            }
+        } else if (numeroJugado.substring(0, 3) === oficial1erPremio.substring(0, 3)) {
+            esGanador = true; molar = 20; justificacion = "Tres primeras cifras del Primer Premio";
+        } else if (numeroJugado.substring(1, 4) === oficial1erPremio.substring(1, 4)) {
+            esGanador = true; montoGanado = 20; justificacion = "Tres últimas cifras del Primer Premio";
+        } else if (numeroJugado.substring(2, 4) === oficial1erPremio.substring(2, 4)) {
+            esGanador = true; montoGanado = 14; justificacion = "Dos últimas cifras del Primer Premio (Chance)";
+        } else if (numeroJugado.substring(0, 1) === oficial1erPremio.substring(0, 1)) {
+            esGanador = true; montoGanado = 1; justificacion = "Primera cifra del Primer Premio";
+        } else if (numeroJugado === oficial2doPremio) {
+            esGanador = true; montoGanado = 600; justificacion = "Segundo Premio Completo";
+        } else if (numeroJugado.substring(2, 4) === oficial2doPremio.substring(2, 4)) {
+            esGanador = true; montoGanado = 3; justificacion = "Dos últimas cifras del Segundo Premio (Chance)";
+        } else if (numeroJugado === oficial3erPremio) {
+            esGanador = true; montoGanado = 300; justificacion = "Tercer Premio Completo";
+        } else if (numeroJugado.substring(2, 4) === oficial3erPremio.substring(2, 4)) {
+            esGanador = true; montoGanado = 2; justificacion = "Dos últimas cifras del Tercer Premio (Chance)";
+        }
 
         // Comprobación e indicador de coincidencia
         const matchIndicator = document.getElementById('validation-match-result');
-        if (numeroBilleteComprado === primerPremioOficial || numeroBilleteComprado === segundoPremioOficial || numeroBilleteComprado === tercerPremioOficial) {
-            matchIndicator.className = "match-indicator match-win";
-            matchIndicator.innerHTML = `🎉 ¡BILLETE PREMIADO! Tu número ${numeroBilleteComprado} registra coincidencia con los resultados oficiales de la LNB.`;
+        if (esGanador) {
+            if (esCaducado) {
+                matchIndicator.className = "status-badge caducado";
+                matchIndicator.innerHTML = `⚠️ PREMIADO PERO CADUCADO (No hacer efectivo)<br><small>El billete ganó $${montoGanado} por: ${justificacion}, pero superó los 3 meses reglamentarios para su cobro.</small>`;
+            } else {
+                matchIndicator.className = "match-indicator match-win";
+                matchIndicator.innerHTML = `🎉 ¡BILLETE PREMIADO!<br><small>Monto estimado: $${montoGanado} - Motivo: ${justificacion}</small>`;
+                reproducirSonidoPremio();
+            }
         } else {
             matchIndicator.className = "match-indicator match-lose";
             matchIndicator.innerHTML = `❌ No premiado. Tu número leído fue el ${numeroBilleteComprado} y no coincide con los premios mayores del sorteo ${numeroSorteo}.`;
-        }
+        }        
     }
 
-    // Inicialización automática
-    window.onload = function() {
-        
-        simularPeticionOficialFecha();
-    };
+
    // PERSISTENCIA LOCAL STORAGE
     function guardarEnHistorial(sorteo, num, sf, desc, monto) {
         let lista = JSON.parse(localStorage.getItem('lnb_historial')) || [];
