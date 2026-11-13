@@ -159,6 +159,17 @@
             color: #7f8c8d;
             margin-top: 4px;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+        }
+        th { background-color: #ebf8ff; color: #2b6cb0; }
     </style>
 </head>
 <body>
@@ -248,42 +259,25 @@
     }
 
     // --- PARTE 1: DETERMINACIÓN DE FECHAS Y CONSULTA AUTÓNOMA DE RECIENTES ---
-    function obtenerFechaMasReciente() {
-        const ahora = new Date();
-        const horaActual = ahora.getHours();
-        const diaSemana = ahora.getDay(); // 0 = Domingo, 3 = Miércoles
-        
-        let fechaSorteo = new Date(ahora);
 
-        // Lógica horaria y semanal para determinar el sorteo jugado inmediatamente más reciente
-        if (diaSemana === 0) { // Domingo
-            if (horaActual < 15) fechaSorteo.setDate(ahora.getDate() - 3); // Miercolito anterior
-        } else if (diaSemana === 3) { // Miércoles
-            if (horaActual < 15) fechaSorteo.setDate(ahora.getDate() - 3); // Dominical anterior
-        } else if (diaSemana > 0 && diaSemana < 3) { // Lunes o Martes -> Sorteo es el Domingo
-            fechaSorteo.setDate(ahora.getDate() - diaSemana);
-        } else { // Jueves, Viernes o Sábado -> Sorteo es el Miércoles
-            let diferencia = diaSemana - 3;
-            fechaSorteo.setDate(ahora.getDate() - diferencia);
-        }
-
-        const yyyy = fechaSorteo.getFullYear();
-        const mm = String(fechaSorteo.getMonth() + 1).padStart(2, '0');
-        const dd = String(fechaSorteo.getDate()).padStart(2, '0');
-        return `${yyyy}-${mm}-${dd}`;
-    }
     const { JSDOM } = require('jsdom');
     
 async function rasparWeb(codigo) {
-        const url ="https://miyuroone.azurewebsites.net/api/Valores" //?name="+codigo;
-    
+    let url = "https://miyuroone.azurewebsites.net/api/Valores"; 
+        
+    if(!(codigo === undefined)){
+       url = "https://miyuroone.azurewebsites.net/api/Valores/" + codigo;
+ 
+    } 
+
     try { 
         // 1. Realizar la consulta / fetch a la URL 
-        const respuesta = await fetch(url); 
+        const respuesta = await fetch(url);  
+        
         if (!respuesta.ok) throw new Error("Error en la solicitud");
-                
-                const datos = await respuesta.json();  
-                return datos;
+                 
+            const datos = await respuesta.json();  
+            return datos;
     
     } catch (error) {
         alert("Hubo un fallo durante el raspado:", error.message);
@@ -292,13 +286,12 @@ async function rasparWeb(codigo) {
 
 }
 
-
-
  async function simularPeticionOficialFecha() { 
   
-        const datos = await rasparWeb(12354);
+        const datos = await rasparWeb();
+        
         const info = datos.Resultado; 
-  
+ 
         // Simulación exacta del comportamiento del DOM de lnb.gob.pa
         const mockBoardWideHTML = `
                         <div class="board-wide" style="--tema-color: #e63946; --tema-glow: rgba(230, 57, 70, 0.4); --tema-bg: rgba(230, 57, 70, 0.08); background: #fff; border-radius: 20px; border: 2px solid var(--tema-color); box-shadow: 0 8px 25px rgba(0,0,0,0.05), 0 0 15px var(--tema-glow); display: flex; flex-direction: column; width: 100%; max-width: 275px; margin: 0 auto; overflow: hidden;">
@@ -408,32 +401,9 @@ async function rasparWeb(codigo) {
     }
 
     async function procesarCodigoBarras(codigo) {
-        if (codigo.length < 12) {
-            alert("Código de barras inválido o incompleto.");
-            return;
-        }
-
-        const prefijoSorteo = codigo.substring(0, 4);
-        const numeroSorteo = parseInt(prefijoSorteo);
-        const serie = codigo.substring(4, 6);  
-        const numeroBilleteComprado = codigo.substring(6, 10);
-        const folio = codigo.substring(10, 12);
-        
-        let tipoLetra = 'D';
-        let tipoTexto = 'Dominical';
-        
-        if (prefijoSorteo.startsWith('0')) {
-            tipoLetra = (numeroSorteo > 150) ? 'Z' : 'E';
-            tipoTexto = (tipoLetra === 'Z') ? 'Gordito del Zodíaco' : 'Extraordinario';
-        } else if (numeroSorteo >= 3000 && numeroSorteo < 5000) {
-            tipoLetra = 'I';
-            tipoTexto = 'Miercolito / Intermedio';
-        } else if (numeroSorteo >= 5000) {
-            tipoLetra = 'D';
-            tipoTexto = 'Dominical';
-        }
          const datos = await rasparWeb(codigo);
-         
+         //const info = datos.Resultado; 
+        
         // Simular la extracción de resultados del endpoint específico de la LNB
         let oficial1erPremio = datos.Resultado.primerP; 
             let oficialLetras = datos.Resultado.letras;
@@ -441,20 +411,24 @@ async function rasparWeb(codigo) {
             let oficialFolio = datos.Resultado.folio;
         let oficial2erPremio = datos.Resultado.segundoP;
         let oficial3erPremio = datos.Resultado.tercerP;
-
+        let tipoLetra        = datos.Resultado.tipoLetra;
+        let numeroJugado = codigo.substring(6, 10);
+        
         // Inyección del div .board-wide oficial modificando imágenes
         const boardValidationHTML = `
             <div class="board-wide">
-                <h3><img src="https://www.lnb.gob.pa/assets/img/logo_sorteo.png" alt="Icono" style="height:24px; vertical-align:middle; margin-right:8px;"> PÁGINA OFICIAL LNB - CONSULTA DIRECTA DETALLADA</h3>
-                <div class="prize-row"><span>Sorteo Consultado:</span><span class="prize-val">Nº ${numeroSorteo} (${tipoTexto})</span></div>
-                <div class="prize-row"><span>Primer Premio Oficial:</span><span class="prize-val" style="color:var(--primary);">${primerPremioOficial}</span></div>
-                ${tipoLetra !== 'Z' ? `<div class="prize-row"><span>Segundo Premio:</span><span class="prize-val">${segundoPremioOficial}</span></div>` : ''}
-                ${tipoLetra !== 'Z' ? `<div class="prize-row"><span>Tercer Premio:</span><span class="prize-val">${tercerPremioOficial}</span></div>` : ''}
+                <h3><img src="${datos.Resultado.url}" alt="Icono" style="height:24px; vertical-align:middle; margin-right:8px;"> PÁGINA OFICIAL LNB - CONSULTA DIRECTA DETALLADA</h3>
+                <div class="prize-row"><span>Sorteo Consultado:</span><span class="prize-val">${datos.Resultado.fecha}</span></div>
+                <div class="prize-row"><span>Sorteo Consultado:</span><span class="prize-val">${datos.Resultado.sorteo})</span></div>
+                <div class="prize-row"><span>Primer Premio Oficial:</span><span class="prize-val" style="color:var(--primary);">${datos.Resultado.primerP}</span></div>
+                ${tipoLetra !== 'Z' ? `<div class="prize-row"><span>Segundo Premio:</span><span class="prize-val">${datos.Resultado.segundoP}</span></div>` : ''}
+                ${tipoLetra !== 'Z' ? `<div class="prize-row"><span>Tercer Premio:</span><span class="prize-val">${datos.Resultado.tercerP}</span></div>` : ''}
             </div>
-        `;        
+        `;   
+        alert(boardValidationHTML);     
         document.getElementById('injected-board-validation').innerHTML = boardValidationHTML;
 
-        const fechaSorteo = new Date(2026, 10, 8); // Mes 10 es Noviembre en JS
+        const fechaSorteo = new Date(datos.Resultado.fecha);
         const fechaActual = new Date(); // Noviembre 2026 (según contexto actual)
                 
         // Calcular diferencia en meses para la restricción
@@ -506,7 +480,14 @@ async function rasparWeb(codigo) {
         } else {
             matchIndicator.className = "match-indicator match-lose";
             matchIndicator.innerHTML = `❌ No premiado. Tu número leído fue el ${numeroBilleteComprado} y no coincide con los premios mayores del sorteo ${numeroSorteo}.`;
-        }        
+        } 
+        
+        // Mostrar div simulado oficial idéntico en sección validador
+        document.getElementById('official-board-container-val').innerHTML = document.getElementById('official-board-container-calc').innerHTML;
+
+        // Guardar en Historial Local
+        guardarEnHistorial(sorteo, numeroJugado, `S:${serie} F:${folio}`, esCaducado ? `${justificacion} (CADUCADO)` : justificacion, esCaducado ? 0 : montoGanado);
+            
     }
 
 
